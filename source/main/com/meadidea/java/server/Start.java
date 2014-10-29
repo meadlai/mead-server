@@ -14,6 +14,7 @@ public class Start {
 	 */
 	public static void main(String[] args) {
 
+		HttpSever server = new HttpSever();
 		
 	}
 
