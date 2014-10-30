@@ -1,5 +1,12 @@
 package com.meadidea.java.server.container;
 
-public class Container {
+import com.meadidea.java.server.lifecycle.LifeCycle;
+
+/**
+ * 
+ * @author meadlai
+ *
+ */
+public interface Container extends LifeCycle {
 
 }
