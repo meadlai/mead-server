@@ -1,46 +1,55 @@
 /**
  * 
  */
-package com.meadidea.java.server.connector;
+package com.meadidea.java.server.connector.imp;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+
+import com.meadidea.java.server.connector.Connector;
 import com.meadidea.java.server.lifecycle.LifecycleException;
 import com.meadidea.java.server.lifecycle.LifecycleListener;
 
+
 /**
+ * 
  * @author meadlai
  *
  */
 public class CommonSocketConnector implements Connector {
-
+	private ServerSocket serverSocket = null;
 	@Override
 	public void addLifecycleListener(LifecycleListener listener) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public LifecycleListener[] findLifecycleListeners() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public void removeLifecycleListener(LifecycleListener listener) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void start() throws LifecycleException {
-		// TODO Auto-generated method stub
-		
+	      try {
+			serverSocket =  new ServerSocket(80, 1, InetAddress.getByName("127.0.0.1"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
 	public void stop() throws LifecycleException {
-		// TODO Auto-generated method stub
 		
 	}
+
 
 	
 }
