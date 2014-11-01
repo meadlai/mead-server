@@ -50,7 +50,7 @@ public class CommonSocketConnector implements Connector, Runnable {
 		this.thread = new Thread(this, "");
 		this.thread.setDaemon(true);
 		this.thread.start();
-		
+
 	}
 
 	@Override
@@ -64,11 +64,13 @@ public class CommonSocketConnector implements Connector, Runnable {
 
 	@Override
 	public void run() {
-		Socket socket = null;
-		try {
-			socket =  serverSocket.accept();
-		} catch (IOException e) {
-			e.printStackTrace();
+		while (this.stopped == false) {
+			Socket socket = null;
+			try {
+				socket = serverSocket.accept();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
