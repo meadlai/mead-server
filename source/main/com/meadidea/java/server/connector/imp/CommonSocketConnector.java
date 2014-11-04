@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import com.meadidea.java.server.connector.Connector;
+import com.meadidea.java.server.container.engine.HttpHandler;
 import com.meadidea.java.server.lifecycle.LifecycleException;
 import com.meadidea.java.server.lifecycle.LifecycleListener;
 
@@ -48,7 +49,7 @@ public class CommonSocketConnector implements Connector, Runnable {
 			e.printStackTrace();
 		}
 		this.thread = new Thread(this, "");
-		this.thread.setDaemon(true);
+		this.thread.setDaemon(false);
 		this.thread.start();
 
 	}
@@ -64,10 +65,13 @@ public class CommonSocketConnector implements Connector, Runnable {
 
 	@Override
 	public void run() {
-		while (this.stopped == false) {
+		while (!this.stopped) {
 			Socket socket = null;
+			HttpHandler handler = null;
 			try {
 				socket = serverSocket.accept();
+				handler = new HttpHandler(socket);
+				handler.process(socket);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
