@@ -34,11 +34,15 @@ public class HttpResponse implements HttpServletResponse{
 	
 	  // the default buffer size
 	  private static final int BUFFER_SIZE = 1024;
-	  HttpRequest request;
-	  OutputStream output;
-	  PrintWriter writer;
+	  private HttpRequest request;
+	  private OutputStream output;
+	  private PrintWriter writer;
 	  protected byte[] buffer = new byte[BUFFER_SIZE];
 	  protected int bufferCount = 0;
+	  
+	  public OutputStream getOutput(){
+		  return this.output;
+	  }
 	  /**
 	   * Has this response been committed yet?
 	   */
@@ -94,7 +98,7 @@ public class HttpResponse implements HttpServletResponse{
 
 	@Override
 	public PrintWriter getWriter() throws IOException {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 

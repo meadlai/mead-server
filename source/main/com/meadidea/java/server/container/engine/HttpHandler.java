@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import com.meadidea.java.server.container.wrapper.WrapperDispatcher;
 import com.meadidea.java.server.http.HttpRequest;
 import com.meadidea.java.server.http.HttpResponse;
 
@@ -37,13 +38,10 @@ public void process(Socket socket) {
       response = new HttpResponse(output);
       response.setRequest(request);
 
+      WrapperDispatcher dispatcher = new WrapperDispatcher();
+      dispatcher.process(request, response);
 
-//      parseRequest(input, output);
-//      parseHeaders(input);
-
-      //check if this is a request for a servlet or a static resource
-      //a request for a servlet begins with "/servlet/"
-      output.write(23);
+      input.close();
       output.flush();
       output.close();
       System.err.println("Serving...");

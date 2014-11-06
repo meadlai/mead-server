@@ -23,13 +23,42 @@ public class HttpRequest implements HttpServletRequest {
 	//
 	public HttpRequest(InputStream is){
 		//½âÎö
+		this.input = is;
 		this.parse();
 	}
 	
 	private void parse(){
-		
+	    StringBuffer request = new StringBuffer(2048);
+	    int i;
+	    byte[] buffer = new byte[2048];
+	    try {
+	      i = input.read(buffer);
+	    }
+	    catch (IOException e) {
+	      e.printStackTrace();
+	      i = -1;
+	    }
+	    for (int j=0; j<i; j++) {
+	      request.append((char) buffer[j]);
+	    }
+	    System.out.println("##HttpRequest##parse");
+	    System.out.println(request.toString());
+	    this.requestURI = this.parseUri(request.toString());
+	    System.out.println("##requestURI="+this.requestURI);
+
+//	    request.
 	}
 
+	private String parseUri(String requestString) {
+	    int index1, index2;
+	    index1 = requestString.indexOf(' ');
+	    if (index1 != -1) {
+	      index2 = requestString.indexOf(' ', index1 + 1);
+	      if (index2 > index1)
+	        return requestString.substring(index1 + 1, index2);
+	    }
+	    return null;
+	  }
 	@Override
 	public Object getAttribute(String name) {
 		// TODO Auto-generated method stub
@@ -304,7 +333,7 @@ public class HttpRequest implements HttpServletRequest {
 	@Override
 	public String getRequestURI() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.requestURI;
 	}
 
 	@Override
