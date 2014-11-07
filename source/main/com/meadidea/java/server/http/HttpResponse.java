@@ -1,29 +1,21 @@
 package com.meadidea.java.server.http;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 public class HttpResponse implements HttpServletResponse{
 	//
 	public HttpResponse(OutputStream os){
 		this.output = os;
+		//writer = new PrintWriter(this.output,true);
 	}
 
 	public void setRequest(HttpRequest request) {
@@ -98,8 +90,8 @@ public class HttpResponse implements HttpServletResponse{
 
 	@Override
 	public PrintWriter getWriter() throws IOException {
-		
-		return null;
+	    writer = new PrintWriter(output, true);
+	    return writer;
 	}
 
 	@Override

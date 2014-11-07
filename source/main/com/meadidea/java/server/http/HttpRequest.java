@@ -20,11 +20,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 public class HttpRequest implements HttpServletRequest {
+	private static String METHOD_GET = "GET";
 	//
 	public HttpRequest(InputStream is){
 		//½âÎö
 		this.input = is;
 		this.parse();
+		
+		//TODO: method.
+		this.method = METHOD_GET;
 	}
 	
 	private void parse(){
@@ -129,7 +133,7 @@ public class HttpRequest implements HttpServletRequest {
 	@Override
 	public String getProtocol() {
 		// TODO Auto-generated method stub
-		return null;
+		return "1.1";
 	}
 
 	@Override
@@ -279,7 +283,7 @@ public class HttpRequest implements HttpServletRequest {
 	@Override
 	public String getMethod() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.method;
 	}
 
 	@Override
@@ -338,8 +342,8 @@ public class HttpRequest implements HttpServletRequest {
 
 	@Override
 	public StringBuffer getRequestURL() {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuffer sb = new StringBuffer(this.requestURI);
+		return sb;
 	}
 
 	@Override

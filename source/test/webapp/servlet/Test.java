@@ -14,10 +14,10 @@ public class Test extends HttpServlet {
 			throws ServletException, IOException {
 		String protocol = req.getProtocol();
 		String msg = "<h1>from Mead servelt</h1>";
-		if (protocol.endsWith("1.1")) {
-			resp.getWriter().append(msg);
+		if ("1.1".equalsIgnoreCase(protocol)) {
+			resp.getWriter().write(msg);;
 		} else {
-
+			resp.getWriter().write(msg);;
 		}
 	}
 
