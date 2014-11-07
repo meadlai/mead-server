@@ -9,8 +9,14 @@ public class WrapperDispatcher implements Wrapper {
 	public void process(HttpRequest request, HttpResponse response) {
 		String url = request.getRequestURI();
 		if(url.contains("html")){
-			StaticResourceWrapper staticWrapper = new StaticResourceWrapper();
-			staticWrapper.process(request, response);
+			StaticResourceWrapper staticWp = new StaticResourceWrapper();
+			staticWp.process(request, response);
+		}else if(url.contains("servlet")){
+			ServletWrapper servletWp = new ServletWrapper();
+			servletWp.process(request, response);
+		}else if(url.contains(".jsp")){
+			JspWrapper jspWp = new JspWrapper();
+			jspWp.process(request, response);
 		}
 	}
 	
