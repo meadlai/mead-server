@@ -15,9 +15,9 @@ public class Test extends HttpServlet {
 		String protocol = req.getProtocol();
 		String msg = "<h1>from Mead servelt</h1>";
 		if ("1.1".equalsIgnoreCase(protocol)) {
-			resp.getWriter().write(msg);;
+			resp.getWriter().println(msg);
 		} else {
-			resp.getWriter().write(msg);;
+			resp.getOutputStream();
 		}
 	}
 
