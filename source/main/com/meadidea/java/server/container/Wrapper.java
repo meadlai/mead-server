@@ -1,4 +1,4 @@
-package com.meadidea.java.server.container.wrapper;
+package com.meadidea.java.server.container;
 
 import com.meadidea.java.server.http.HttpRequest;
 import com.meadidea.java.server.http.HttpResponse;

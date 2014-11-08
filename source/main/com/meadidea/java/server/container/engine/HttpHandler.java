@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import com.meadidea.java.server.container.Container;
 import com.meadidea.java.server.container.wrapper.WrapperDispatcher;
 import com.meadidea.java.server.http.HttpRequest;
 import com.meadidea.java.server.http.HttpResponse;
@@ -16,12 +17,14 @@ import com.meadidea.java.server.http.HttpResponse;
  *
  */
 public class HttpHandler {
-	private Socket socket;
 	private HttpRequest request;
 	private HttpResponse response;
+	private Container rootContainer;
+
 	
 public HttpHandler(Socket skt){
 	//this.socket = skt;
+	this.rootContainer = new BasicEngine();
 }
 
 public void process(Socket socket) {
@@ -37,9 +40,11 @@ public void process(Socket socket) {
       // create HttpResponse object
       response = new HttpResponse(output);
       response.setRequest(request);
-
-      WrapperDispatcher dispatcher = new WrapperDispatcher();
-      dispatcher.process(request, response);
+      this.rootContainer.invoke(request, response);
+      
+      
+//      WrapperDispatcher dispatcher = new WrapperDispatcher();
+//      dispatcher.process(request, response);
 
       input.close();
       output.flush();

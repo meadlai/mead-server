@@ -10,6 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 
+import com.meadidea.java.server.container.Wrapper;
 import com.meadidea.java.server.http.HttpRequest;
 import com.meadidea.java.server.http.HttpResponse;
 
