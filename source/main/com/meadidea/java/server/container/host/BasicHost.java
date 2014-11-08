@@ -1,6 +1,7 @@
 package com.meadidea.java.server.container.host;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 
@@ -16,6 +17,7 @@ import com.meadidea.java.server.http.HttpResponse;
  *
  */
 public class BasicHost implements Container,Host {
+	private HashMap<String,Host> hostlist = new HashMap<String,Host>();
 
 	@Override
 	public void addChild(Container child) {

@@ -22,7 +22,7 @@ import com.meadidea.java.server.http.HttpResponse;
  *
  */
 public class BasicEngine implements Container,Engine{
-	private HashMap<String,Host> hostlist = new HashMap<String,Host>();
+	private HashMap<String,Host> hostMap = new HashMap<String,Host>();
 	private Container defaultHost =null;
 
 	public BasicEngine(){
