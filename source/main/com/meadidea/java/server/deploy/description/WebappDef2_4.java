@@ -17,13 +17,14 @@ public final class WebappDef2_4 {
 	//
 	private List<ContextParamDef> context_param = new ArrayList<ContextParamDef>(
 			2);
-	private List<EnvEntryDef> env_entry = new ArrayList<EnvEntryDef>(2);
-	private List<FilterDef> filter = new ArrayList<FilterDef>(2);
+	private List<EnvEntryDef> env_entry = new ArrayList<EnvEntryDef>(1);
+	private List<FilterDef> filter = new ArrayList<FilterDef>(1);
 	private List<FilterMappingDef> filter_mapping = new ArrayList<FilterMappingDef>(
 			2);
 	private List<ServletDef> servlet = new ArrayList<ServletDef>(2);
 	private List<ServletMappingDef> servlet_mapping = new ArrayList<ServletMappingDef>(
 			2);
+	private List<String> listener_class = new ArrayList<String>(1);
 
 	// extension,mime-type
 	private HashMap<String, String> mime_mapping = new HashMap<String, String>();
@@ -84,6 +85,10 @@ public final class WebappDef2_4 {
 
 	public void addServlet_mapping(ServletMappingDef def) {
 		this.servlet_mapping.add(def);
+	}
+	
+	public void addListner_class(String listenerClass){
+		this.listener_class.add(listenerClass);
 	}
 
 	public void addMime_mapping(String extension, String mimeType) {
