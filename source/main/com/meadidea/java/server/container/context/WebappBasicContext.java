@@ -10,7 +10,7 @@ import com.meadidea.java.server.lifecycle.Lifecycle;
 import com.meadidea.java.server.lifecycle.LifecycleException;
 import com.meadidea.java.server.lifecycle.LifecycleListener;
 
-public class BasicContext implements Context,Lifecycle{
+public class WebappBasicContext implements Context,Lifecycle{
 	//was it startup fine...
 	private boolean available = false;
 	private HashMap servletMappings = new HashMap();
