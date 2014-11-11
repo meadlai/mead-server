@@ -1,4 +1,7 @@
-ÕûÌå¼Æ»®£º
-1£¬Á¬½ÓÆ÷Connector¹¤³§
-2£¬HttpÏìÓ¦
-3£¬¾²Ì¬×ÊÔ´´¦Àí
+
+1ï¼Œè¿æ¥å™¨Connectorå·¥å‚
+2ï¼ŒHttpå“åº”
+3ï¼Œé™æ€èµ„æº & servlet
+4, Engine,Context,Host,Wrapper
+5, Session, Deployer....
+....
