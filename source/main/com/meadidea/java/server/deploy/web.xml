@@ -20,6 +20,7 @@
 
 
 	<env-entry>
+		<description>test</description>
 		<env-entry-name>webmasterName</env-entry-name>
 		<env-entry-type>java.lang.String</env-entry-type>
 		<env-entry-value>Ms. W. Master</env-entry-value>
