@@ -8,6 +8,16 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.meadidea.java.server.deploy.description.ContextParamDef;
+import com.meadidea.java.server.deploy.description.EnvEntryDef;
+import com.meadidea.java.server.deploy.description.ErrorPageDef;
+import com.meadidea.java.server.deploy.description.FilterDef;
+import com.meadidea.java.server.deploy.description.FilterMappingDef;
+import com.meadidea.java.server.deploy.description.ServletDef;
+import com.meadidea.java.server.deploy.description.ServletMappingDef;
+import com.meadidea.java.server.deploy.description.WebappDef2_4;
+import com.meadidea.java.server.support.IntegerUtil;
+
 public class TestDeploy {
 
 	public static void main(String[] args) throws Exception {
@@ -15,27 +25,34 @@ public class TestDeploy {
 		deploy.testWebXMLRead();
 	}
 
-	public void testWebXMLRead() throws DocumentException {
+	public WebappDef2_4 testWebXMLRead() throws DocumentException {
+		WebappDef2_4 webappDef = new WebappDef2_4();
+		
 		SAXReader saxReader = new SAXReader();
 		String path = this.getClass().getResource("").getPath();
 		System.out.println(path);
 		File file = new File(path + "web.xml");
 		Document document = saxReader.read(file);
 
-		//get root element
+		// get root element
 		Element webapp = document.getRootElement();
 		String webappVersion = webapp.attributeValue("version");
 		System.out.println("webappVersion = " + webappVersion);
 		Element displayName = webapp.element("display-name");
+		webappDef.setDisplay_name(displayName.getTextTrim());
 		System.out.println("displayName = " + displayName.getTextTrim());
 		Element description = webapp.element("description");
+		webappDef.setDescription(description.getTextTrim());
 		System.out.println("description = " + description.getTextTrim());
 
 		// session_timeout
 		Element sessionConfig = webapp.element("session-config");
 		if (sessionConfig != null) {
 			Element sessionTimeout = sessionConfig.element("session-timeout");
-			System.out.println("sessionTimeout = " + sessionTimeout.getTextTrim());
+			System.out.println("sessionTimeout = "
+					+ sessionTimeout.getTextTrim());
+			int timeout = IntegerUtil.intFromString(sessionTimeout.getTextTrim(), 1200);
+			webappDef.setSession_timeout(timeout);
 		}
 
 		// context_param
@@ -44,19 +61,25 @@ public class TestDeploy {
 				.iterator();
 		if (contextParams != null) {
 			while (contextParams.hasNext()) {
+				ContextParamDef cpd = new ContextParamDef();
 				System.out.println("!!!!");
 				Element contextParam = contextParams.next();
 				Element paramName = contextParam.element("param-name");
 				System.out.println(paramName.getName() + ":"
 						+ paramName.getTextTrim());
+				cpd.setParam_name(paramName.getTextTrim());
 				Element paramValue = contextParam.element("param-value");
 				System.out.println(paramValue.getName() + ":"
 						+ paramValue.getTextTrim());
+				cpd.setParam_value(paramValue.getTextTrim());
 				Element paramDescription = contextParam.element("description");
 				if (paramDescription != null) {
 					System.out.println(paramDescription.getName() + ":"
 							+ paramDescription.getTextTrim());
+					cpd.setDescription(paramDescription.getTextTrim());
 				}
+				//
+				webappDef.addContext_param(cpd);
 			}
 		}
 
@@ -66,19 +89,27 @@ public class TestDeploy {
 		if (envEntrys != null) {
 			while (envEntrys.hasNext()) {
 				System.out.println("!!!!");
+				EnvEntryDef eed = new EnvEntryDef();
 				Element envEntry = envEntrys.next();
 				Element envName = envEntry.element("env-entry-name");
-				System.out.println(envName.getName() + ":" + envName.getTextTrim());
+				System.out.println(envName.getName() + ":"
+						+ envName.getTextTrim());
+				eed.setEnv_entry_name(envName.getTextTrim());
 				Element envValue = envEntry.element("env-entry-value");
 				System.out.println(envValue.getName() + ":"
 						+ envValue.getTextTrim());
+				eed.setEnv_entry_value(envValue.getTextTrim());
 				Element envType = envEntry.element("env-entry-type");
-				System.out.println(envType.getName() + ":" + envType.getTextTrim());
+				System.out.println(envType.getName() + ":"
+						+ envType.getTextTrim());
+				eed.setEnv_entry_type(envType.getTextTrim());
 				Element envDescription = envType.element("description");
 				if (envDescription != null) {
 					System.out.println(envDescription.getName() + ":"
 							+ envDescription.getTextTrim());
+					eed.setDescription( envDescription.getTextTrim());
 				}
+				webappDef.addEnv_entry(eed);
 			}
 		}
 		// servlet
@@ -86,16 +117,22 @@ public class TestDeploy {
 		Iterator<Element> servlets = webapp.elements("servlet").iterator();
 		while (servlets.hasNext()) {
 			System.out.println("####");
+			ServletDef sd = new ServletDef();
 			Element servlet = servlets.next();
 			Element servletName = servlet.element("servlet-name");
 			System.out.println(servletName.getName() + ":"
 					+ servletName.getTextTrim());
+			sd.setServlet_name(servletName.getTextTrim());
 			Element servletClass = servlet.element("servlet-class");
 			System.out.println(servletClass.getName() + ":"
 					+ servletClass.getTextTrim());
+			sd.setServlet_class(servletClass.getTextTrim());
 			Element loadonStartup = servlet.element("load-on-startup");
 			System.out.println(loadonStartup.getName() + ":"
 					+ loadonStartup.getTextTrim());
+			int startup = IntegerUtil.intFromString(loadonStartup.getTextTrim(), 0);
+			sd.setLoad_on_startup(startup);
+
 			// init-param
 			@SuppressWarnings("unchecked")
 			Iterator<Element> initParms = servlet.elements("init-param")
@@ -108,34 +145,44 @@ public class TestDeploy {
 				Element paramValue = initParm.element("param-value");
 				System.out.println(paramValue.getName() + ":"
 						+ paramValue.getTextTrim());
+				sd.addInitParam(paramName.getTextTrim(), paramValue.getTextTrim());
 			}
+			webappDef.addServlet(sd);
 		}
 
 		// servlet-mapping
 		@SuppressWarnings("unchecked")
-		Iterator<Element> servletMappings = webapp.elements("servlet-mapping").iterator();
+		Iterator<Element> servletMappings = webapp.elements("servlet-mapping")
+				.iterator();
 		while (servletMappings.hasNext()) {
 			System.out.println("%%%%");
+			ServletMappingDef smd = new ServletMappingDef();
 			Element servletMapping = servletMappings.next();
 			Element servletName = servletMapping.element("servlet-name");
 			System.out.println(servletName.getName() + ":"
 					+ servletName.getTextTrim());
+			smd.setServlet_name(servletName.getTextTrim());
 			Element urlPattern = servletMapping.element("url-pattern");
 			System.out.println(urlPattern.getName() + ":"
 					+ urlPattern.getTextTrim());
+			smd.setUrl_pattern(urlPattern.getTextTrim());
+			webappDef.addServlet_mapping(smd);
 		}
 		// filter
 		@SuppressWarnings("unchecked")
 		Iterator<Element> filters = webapp.elements("filter").iterator();
 		while (filters.hasNext()) {
 			System.out.println("&&&&");
+			FilterDef fd = new FilterDef();
 			Element filter = filters.next();
 			Element filterName = filter.element("filter-name");
 			System.out.println(filterName.getName() + ":"
 					+ filterName.getTextTrim());
+			fd.setFilter_name(filterName.getTextTrim());
 			Element filterClass = filter.element("filter-class");
 			System.out.println(filterClass.getName() + ":"
 					+ filterClass.getTextTrim());
+			fd.setFilter_class(filterClass.getTextTrim());
 			
 			// init-param
 			@SuppressWarnings("unchecked")
@@ -149,23 +196,30 @@ public class TestDeploy {
 				Element paramValue = initParm.element("param-value");
 				System.out.println(paramValue.getName() + ":"
 						+ paramValue.getTextTrim());
+				fd.addInitParam(paramName.getTextTrim(),paramValue.getTextTrim());
 			}
+			webappDef.addFilter(fd);
 		}
-		
+
 		// filter-mapping
 		@SuppressWarnings("unchecked")
-		Iterator<Element> filterMappings = webapp.elements("filter-mapping").iterator();
+		Iterator<Element> filterMappings = webapp.elements("filter-mapping")
+				.iterator();
 		while (filterMappings.hasNext()) {
 			System.out.println("~~~~");
+			FilterMappingDef fmd = new FilterMappingDef();
 			Element filterMapping = filterMappings.next();
 			Element filterName = filterMapping.element("filter-name");
 			System.out.println(filterName.getName() + ":"
 					+ filterName.getTextTrim());
+			fmd.setFilter_name(filterName.getTextTrim());
 			Element urlPattern = filterMapping.element("url-pattern");
 			System.out.println(urlPattern.getName() + ":"
 					+ urlPattern.getTextTrim());
+			fmd.setUrl_pattern(urlPattern.getTextTrim());
+			webappDef.addFilter_mapping(fmd);
 		}
-		
+
 		// listener
 		System.out.println("^^^^^");
 		@SuppressWarnings("unchecked")
@@ -173,8 +227,41 @@ public class TestDeploy {
 		while (listeners.hasNext()) {
 			Element listener = listeners.next();
 			Element listenerClass = listener.element("listener-class");
-			System.out.println("listenerClass = " + listenerClass.getTextTrim());
+			System.out
+					.println("listenerClass = " + listenerClass.getTextTrim());
+			webappDef.addListner_class(listenerClass.getTextTrim());
 		}
+
+		// error-page
+		System.out.println("******");
+		@SuppressWarnings("unchecked")
+		Iterator<Element> errorPages = webapp.elements("error-page").iterator();
+		while (errorPages.hasNext()) {
+			System.out.println("******");
+			ErrorPageDef epd = new ErrorPageDef();
+			Element errorPage = errorPages.next();
+
+			Element exceptionType = errorPage.element("exception-type");
+			if (exceptionType != null) {
+				System.out.println(exceptionType.getName() + ":"
+						+ exceptionType.getTextTrim());
+				epd.setException_type(exceptionType.getTextTrim());
+			}
+			Element errorCode = errorPage.element("error-code");
+			if (errorCode != null) {
+				System.out.println(errorCode.getName() + ":"
+						+ errorCode.getTextTrim());
+				epd.setError_code(errorCode.getTextTrim());
+			}
+			Element location = errorPage.element("location");
+			System.out.println(location.getName() + ":"
+					+ location.getTextTrim());
+			epd.setLocation(location.getTextTrim());
+			webappDef.addError_page(epd);
+		}
+		
+		//finally
+		return webappDef;
 	}
 
 }

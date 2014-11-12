@@ -26,9 +26,10 @@ public final class WebappDef2_4 {
 			2);
 	private List<String> listener_class = new ArrayList<String>(1);
 
-	// extension,mime-type
+	// extension,mime-type,error-page
 	private HashMap<String, String> mime_mapping = new HashMap<String, String>();
 	private List<String> welcome_file_list = new ArrayList<String>();
+	private List<ErrorPageDef> error_page = new ArrayList<ErrorPageDef>();
 
 	public String getDisplay_name() {
 		return display_name;
@@ -97,6 +98,10 @@ public final class WebappDef2_4 {
 
 	public void addWelcome_file_list(String def) {
 		this.welcome_file_list.add(def);
+	}
+	
+	public void addError_page(ErrorPageDef def){
+		this.error_page.add(def);
 	}
 
 }

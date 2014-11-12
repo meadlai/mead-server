@@ -6,6 +6,7 @@ public final class EnvEntryDef {
 	private String env_entry_name;
 	private String env_entry_value;
 	private String env_entry_type;
+	private String description;
 	public String getEnv_entry_name() {
 		return env_entry_name;
 	}
@@ -23,6 +24,13 @@ public final class EnvEntryDef {
 	}
 	public void setEnv_entry_type(String env_entry_type) {
 		this.env_entry_type = env_entry_type;
+	}
+	//
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 }
