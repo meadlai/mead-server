@@ -11,10 +11,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 
 import com.meadidea.java.server.container.Wrapper;
+import com.meadidea.java.server.deploy.description.ServletDef;
 import com.meadidea.java.server.http.HttpRequest;
 import com.meadidea.java.server.http.HttpResponse;
 
 public class ServletWrapper implements Wrapper{
+	//
+	private ServletDef servletDefine;
 
 	@Override
 	public void process(HttpRequest request, HttpResponse response) {

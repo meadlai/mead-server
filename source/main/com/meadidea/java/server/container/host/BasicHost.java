@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import com.meadidea.java.server.container.Container;
 import com.meadidea.java.server.container.Host;
 import com.meadidea.java.server.container.wrapper.WrapperDispatcher;
+import com.meadidea.java.server.deploy.description.WebappDef2_4;
 import com.meadidea.java.server.http.HttpRequest;
 import com.meadidea.java.server.http.HttpResponse;
 
@@ -17,8 +18,8 @@ import com.meadidea.java.server.http.HttpResponse;
  *
  */
 public class BasicHost implements Container,Host {
-	private HashMap<String,Host> hostlist = new HashMap<String,Host>();
-
+	private WebappDef2_4 webappDefine;
+	
 	@Override
 	public void addChild(Container child) {
 
