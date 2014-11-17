@@ -4,7 +4,7 @@ import java.beans.PropertyChangeListener;
 
 import com.meadidea.java.server.loader.Loader;
 
-public class WebappLoader implements Loader{
+public class WebClassLoader extends ClassLoader  implements Loader{
 
 	@Override
 	public boolean modified() {
@@ -23,7 +23,7 @@ public class WebappLoader implements Loader{
 
 	@Override
 	public String getInfo() {
-		return null;
+		return "WebClassLoader";
 	}
 
 	@Override
@@ -53,8 +53,13 @@ public class WebappLoader implements Loader{
 
 	@Override
 	public void addRepository(String repository) {
-		// TODO Auto-generated method stub
 		
 	}
+	
+	//
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
+    	//TODO:override it.
+        throw new ClassNotFoundException(name);
+    }
 
 }

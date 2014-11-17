@@ -4,8 +4,13 @@ import java.beans.PropertyChangeListener;
 
 import com.meadidea.java.server.loader.Loader;
 
-public class BasicClassLoader  implements Loader{
-
+public class WebAppLoader extends ClassLoader implements Loader{
+	
+	//
+	public WebAppLoader(){
+		super();//parent load me.
+	}
+	
 	@Override
 	public boolean modified() {
 		return false;
@@ -23,7 +28,7 @@ public class BasicClassLoader  implements Loader{
 
 	@Override
 	public String getInfo() {
-		return null;
+		return "WebAppLoader";
 	}
 
 	@Override
@@ -55,5 +60,11 @@ public class BasicClassLoader  implements Loader{
 	public void addRepository(String repository) {
 		
 	}
+	
+	//
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
+    	//TODO:override it.
+        throw new ClassNotFoundException(name);
+    }
 
 }
