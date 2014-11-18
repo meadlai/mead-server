@@ -1,11 +1,14 @@
 package com.meadidea.java.server.loader.imp;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import com.meadidea.java.server.loader.Loader;
 
-public class WebAppLoader extends ClassLoader implements Loader{
-	
+public class WebAppLoader implements Loader,PropertyChangeListener{
+	//
+    private WebClassLoader classLoader = null;
+
 	//
 	public WebAppLoader(){
 		super();//parent load me.
@@ -46,10 +49,7 @@ public class WebAppLoader extends ClassLoader implements Loader{
 		
 	}
 
-	@Override
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		
-	}
+	
 
 	@Override
 	public String[] findRepositories() {
@@ -60,11 +60,17 @@ public class WebAppLoader extends ClassLoader implements Loader{
 	public void addRepository(String repository) {
 		
 	}
-	
+
 	//
-    protected Class<?> findClass(String name) throws ClassNotFoundException {
-    	//TODO:override it.
-        throw new ClassNotFoundException(name);
-    }
+	@Override
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		
+	}
+	
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		
+	}
+	
 
 }
