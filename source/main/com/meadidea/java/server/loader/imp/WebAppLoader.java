@@ -3,6 +3,7 @@ package com.meadidea.java.server.loader.imp;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import com.meadidea.java.server.container.Container;
 import com.meadidea.java.server.loader.Loader;
 
 public class WebAppLoader implements Loader,PropertyChangeListener{
@@ -12,6 +13,13 @@ public class WebAppLoader implements Loader,PropertyChangeListener{
 	//
 	public WebAppLoader(){
 		super();//parent load me.
+		this.classLoader = new WebClassLoader();
+	}
+	
+	@Override
+	public ClassLoader getClassLoader() {
+		// TODO Auto-generated method stub
+		return this.classLoader;
 	}
 	
 	@Override
@@ -71,6 +79,20 @@ public class WebAppLoader implements Loader,PropertyChangeListener{
 	public void propertyChange(PropertyChangeEvent evt) {
 		
 	}
+
+	@Override
+	public Container getContainer() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setContainer(Container container) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 	
 
 }

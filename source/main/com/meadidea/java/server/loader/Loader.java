@@ -2,9 +2,14 @@ package com.meadidea.java.server.loader;
 
 import java.beans.PropertyChangeListener;
 
+import com.meadidea.java.server.container.Container;
+
 public interface Loader {
 	//
     public boolean modified();
+    //
+    public ClassLoader getClassLoader();
+
     //
     public boolean getDelegate();
     public void setDelegate(boolean delegate);
@@ -21,5 +26,8 @@ public interface Loader {
     //
     public String[] findRepositories();
     public void addRepository(String repository);
+    //
+    public Container getContainer();
+    public void setContainer(Container container);
 
 }

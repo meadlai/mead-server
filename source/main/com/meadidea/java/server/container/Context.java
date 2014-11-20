@@ -3,7 +3,7 @@ package com.meadidea.java.server.container;
 import javax.servlet.ServletContext;
 
 public interface Context {
-	
+
 	public boolean getAvailable();
 
 	public void setAvailable(boolean available);

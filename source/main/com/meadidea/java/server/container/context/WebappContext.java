@@ -1,19 +1,68 @@
 package com.meadidea.java.server.container.context;
 
+import java.io.File;
 import java.util.HashMap;
 
 import javax.servlet.ServletContext;
 
+import org.dom4j.DocumentException;
+
 import com.meadidea.java.server.container.Container;
 import com.meadidea.java.server.container.Context;
+import com.meadidea.java.server.deploy.TestDeploy;
+import com.meadidea.java.server.deploy.description.WebappDef2_4;
 import com.meadidea.java.server.lifecycle.Lifecycle;
 import com.meadidea.java.server.lifecycle.LifecycleException;
 import com.meadidea.java.server.lifecycle.LifecycleListener;
+import com.meadidea.java.server.loader.imp.WebAppLoader;
 
-public class WebappBasicContext implements Context,Lifecycle{
+public class WebappContext implements Context,Lifecycle{
 	//was it startup fine...
 	private boolean available = false;
 	private HashMap servletMappings = new HashMap();
+	//wep-path,web.xml,classes,lib.
+	private String path;
+	private String docBase;
+	private String webxmlPath;
+	private WebappDef2_4 webXmlDefine;
+
+	//
+	private WebAppLoader webappLoader;
+	
+	public WebappContext(String path){
+		this.path = path;
+		if(this.validateWebapp()==false){
+			throw new RuntimeException("Can't init Webapp:" + path);
+		}
+	}
+	
+	private boolean validateWebapp(){
+		//1,is file there?
+		//2,is web.xml ok?
+		File file = new File(path);
+		if(file.exists() && file.isDirectory()){
+			//pass
+		}else{
+			return false;
+		}
+		//
+		this.webxmlPath = path + "WEB-INF\\web.xml";
+		file = new File(this.webxmlPath);
+		if(file.exists() && file.isFile()){
+			//pass
+		}else{
+			return false;
+		}
+		
+		//
+		try {
+			this.webXmlDefine = new TestDeploy().buildWebappDef(this.webxmlPath);
+			return true;
+		} catch (DocumentException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 	
 	@Override
 	public boolean getAvailable() {
@@ -47,22 +96,22 @@ public class WebappBasicContext implements Context,Lifecycle{
 
 	@Override
 	public String getDocBase() {
-		return null;
+		return this.docBase;
 	}
 
 	@Override
 	public void setDocBase(String docBase) {
-		
+		this.docBase = docBase;
 	}
 
 	@Override
 	public String getPath() {
-		return null;
+		return this.path;
 	}
 
 	@Override
 	public void setPath(String path) {
-		
+		this.path = path;
 	}
 
 	@Override

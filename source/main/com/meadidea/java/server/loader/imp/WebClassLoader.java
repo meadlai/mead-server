@@ -1,11 +1,11 @@
 package com.meadidea.java.server.loader.imp;
 
-import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
+import java.util.jar.JarFile;
 
-import com.meadidea.java.server.loader.Loader;
 import com.meadidea.java.server.loader.Reloader;
 
 /**
@@ -13,7 +13,7 @@ import com.meadidea.java.server.loader.Reloader;
  * @author meadlai
  *
  */
-public class WebClassLoader extends URLClassLoader implements Loader, Reloader {
+public class WebClassLoader extends URLClassLoader implements Reloader {
 
 	// The parent class loader.
 	private ClassLoader parent = null;
@@ -25,9 +25,13 @@ public class WebClassLoader extends URLClassLoader implements Loader, Reloader {
 	protected String repositories[] = new String[0];
 	protected int debug = 0;
 	//
-    protected HashMap resourceEntries = new HashMap();
-    protected HashMap notFoundResources = new HashMap();
-    protected boolean delegate = false;
+	protected HashMap resourceEntries = new HashMap();
+	protected HashMap notFoundResources = new HashMap();
+	protected boolean delegate = false;
+	//
+    protected JarFile[] jarFiles = new JarFile[0];
+    protected File[] files = new File[0];
+
 
 	public WebClassLoader() {
 		super(new URL[0]);
@@ -72,41 +76,6 @@ public class WebClassLoader extends URLClassLoader implements Loader, Reloader {
 	}
 
 	@Override
-	public boolean getDelegate() {
-		return false;
-	}
-
-	@Override
-	public void setDelegate(boolean delegate) {
-
-	}
-
-	@Override
-	public String getInfo() {
-		return "WebClassLoader";
-	}
-
-	@Override
-	public boolean getReloadable() {
-		return false;
-	}
-
-	@Override
-	public void setReloadable(boolean reloadable) {
-
-	}
-
-	@Override
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-
-	}
-
-	@Override
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-
-	}
-
-	@Override
 	public String[] findRepositories() {
 		return null;
 	}
@@ -116,18 +85,20 @@ public class WebClassLoader extends URLClassLoader implements Loader, Reloader {
 
 	}
 
-	//
+	// TODO: implements
 	protected Class<?> findClass(String name) throws ClassNotFoundException {
-		// TODO:override it.
+		System.out.println("###findClass@" + name);
 		throw new ClassNotFoundException(name);
 	}
 
+	// TODO: override it
 	public Class<?> loadClass(String name, boolean resolve)
 			throws ClassNotFoundException {
 
 		if (debug >= 2)
 			log("loadClass(" + name + ", " + resolve + ")");
-		Class clazz = null;
+		
+		Class<?> clazz = null;
 
 		// (0) Check our previously loaded class cache
 		clazz = findLoadedClass(name);
@@ -168,7 +139,10 @@ public class WebClassLoader extends URLClassLoader implements Loader, Reloader {
 			}
 		}
 
-		
+		clazz = this.findClass(name);
+		if(clazz!=null){
+			return clazz;
+		}
 		return null;
 	}
 

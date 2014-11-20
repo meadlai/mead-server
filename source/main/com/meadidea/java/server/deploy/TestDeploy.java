@@ -1,6 +1,8 @@
 package com.meadidea.java.server.deploy;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 
 import org.dom4j.Document;
@@ -8,6 +10,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.meadidea.java.server.container.context.WebappContext;
 import com.meadidea.java.server.deploy.description.ContextParamDef;
 import com.meadidea.java.server.deploy.description.EnvEntryDef;
 import com.meadidea.java.server.deploy.description.ErrorPageDef;
@@ -16,22 +19,69 @@ import com.meadidea.java.server.deploy.description.FilterMappingDef;
 import com.meadidea.java.server.deploy.description.ServletDef;
 import com.meadidea.java.server.deploy.description.ServletMappingDef;
 import com.meadidea.java.server.deploy.description.WebappDef2_4;
+import com.meadidea.java.server.loader.imp.WebAppLoader;
 import com.meadidea.java.server.support.IntegerUtil;
 
 public class TestDeploy {
 
 	public static void main(String[] args) throws Exception {
 		TestDeploy deploy = new TestDeploy();
-		deploy.testWebXMLRead();
+		deploy.testDeploy();
+		// deploy.testWebXMLRead();
 	}
 
-	public WebappDef2_4 testWebXMLRead() throws DocumentException {
+	/**
+	 * path = D:\svn\Sources\Mobile_Front\WebRoot\ xml =
+	 * D:\svn\Sources\Mobile_Front\WebRoot\WEB-INF\web.xml lib =
+	 * D:\svn\Sources\Mobile_Front\WebRoot\WEB-INF\lib\ cls =
+	 * D:\svn\Sources\Mobile_Front\WebRoot\WEB-INF\classes\
+	 */
+	public void testDeploy() {
+		String path = "D:\\svn\\Sources\\Mobile_Front\\WebRoot\\";
+		String xml = "D:\\svn\\Sources\\Mobile_Front\\WebRoot\\WEB-INF\\web.xml";
+		String lib = "D:\\svn\\Sources\\Mobile_Front\\WebRoot\\WEB-INF\\lib\\";
+		String cls = "D:\\svn\\Sources\\Mobile_Front\\WebRoot\\WEB-INF\\classes\\";
+
+		// 1=,prepare a demo webapp
+		WebappContext context = new WebappContext(path);
+		// 2,set docbase & path
+		// 3,read web.xml
+		// 4,loader webappContext
+		// 5,builder webappLoader
+		WebAppLoader apploader = new WebAppLoader();
+		ClassLoader classloader = apploader.getClassLoader();
+		//
+		ClassLoader loader1 = apploader.getClassLoader();
+		while (loader1 != null) {
+			System.out.println("1######" + loader1.toString());
+			loader1 = loader1.getParent();
+		}
+		// 6,builder webclassLoader
+		String className = "com.hundsun.fund.mobile.util.StartupServlet";
+		try {
+			Class<?> class1 = classloader.loadClass(className);
+			Object obj1 = class1.newInstance();
+
+			Method setSampleMethod = class1.getMethod("init",
+					java.lang.Object.class);
+			setSampleMethod.invoke(obj1);
+
+			// 7,test SERVLET loading
+			// 8,test LISTNER loading
+			// 9,test context-parameter
+			// 0,integrate socket & http into this
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	//
+	public WebappDef2_4 buildWebappDef(String xmlpath) throws DocumentException {
 		WebappDef2_4 webappDef = new WebappDef2_4();
-		
+
 		SAXReader saxReader = new SAXReader();
-		String path = this.getClass().getResource("").getPath();
-		System.out.println(path);
-		File file = new File(path + "web.xml");
+		File file = new File(xmlpath);
 		Document document = saxReader.read(file);
 
 		// get root element
@@ -42,8 +92,10 @@ public class TestDeploy {
 		webappDef.setDisplay_name(displayName.getTextTrim());
 		System.out.println("displayName = " + displayName.getTextTrim());
 		Element description = webapp.element("description");
-		webappDef.setDescription(description.getTextTrim());
-		System.out.println("description = " + description.getTextTrim());
+		if (description != null) {
+			webappDef.setDescription(description.getTextTrim());
+			System.out.println("description = " + description.getTextTrim());
+		}
 
 		// session_timeout
 		Element sessionConfig = webapp.element("session-config");
@@ -51,7 +103,8 @@ public class TestDeploy {
 			Element sessionTimeout = sessionConfig.element("session-timeout");
 			System.out.println("sessionTimeout = "
 					+ sessionTimeout.getTextTrim());
-			int timeout = IntegerUtil.intFromString(sessionTimeout.getTextTrim(), 1200);
+			int timeout = IntegerUtil.intFromString(
+					sessionTimeout.getTextTrim(), 1200);
 			webappDef.setSession_timeout(timeout);
 		}
 
@@ -107,7 +160,7 @@ public class TestDeploy {
 				if (envDescription != null) {
 					System.out.println(envDescription.getName() + ":"
 							+ envDescription.getTextTrim());
-					eed.setDescription( envDescription.getTextTrim());
+					eed.setDescription(envDescription.getTextTrim());
 				}
 				webappDef.addEnv_entry(eed);
 			}
@@ -130,7 +183,8 @@ public class TestDeploy {
 			Element loadonStartup = servlet.element("load-on-startup");
 			System.out.println(loadonStartup.getName() + ":"
 					+ loadonStartup.getTextTrim());
-			int startup = IntegerUtil.intFromString(loadonStartup.getTextTrim(), 0);
+			int startup = IntegerUtil.intFromString(
+					loadonStartup.getTextTrim(), 0);
 			sd.setLoad_on_startup(startup);
 
 			// init-param
@@ -145,7 +199,8 @@ public class TestDeploy {
 				Element paramValue = initParm.element("param-value");
 				System.out.println(paramValue.getName() + ":"
 						+ paramValue.getTextTrim());
-				sd.addInitParam(paramName.getTextTrim(), paramValue.getTextTrim());
+				sd.addInitParam(paramName.getTextTrim(),
+						paramValue.getTextTrim());
 			}
 			webappDef.addServlet(sd);
 		}
@@ -183,7 +238,7 @@ public class TestDeploy {
 			System.out.println(filterClass.getName() + ":"
 					+ filterClass.getTextTrim());
 			fd.setFilter_class(filterClass.getTextTrim());
-			
+
 			// init-param
 			@SuppressWarnings("unchecked")
 			Iterator<Element> initParms = filter.elements("init-param")
@@ -196,7 +251,8 @@ public class TestDeploy {
 				Element paramValue = initParm.element("param-value");
 				System.out.println(paramValue.getName() + ":"
 						+ paramValue.getTextTrim());
-				fd.addInitParam(paramName.getTextTrim(),paramValue.getTextTrim());
+				fd.addInitParam(paramName.getTextTrim(),
+						paramValue.getTextTrim());
 			}
 			webappDef.addFilter(fd);
 		}
@@ -259,8 +315,8 @@ public class TestDeploy {
 			epd.setLocation(location.getTextTrim());
 			webappDef.addError_page(epd);
 		}
-		
-		//finally
+
+		// finally
 		return webappDef;
 	}
 
