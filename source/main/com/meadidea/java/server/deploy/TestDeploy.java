@@ -33,7 +33,7 @@ public class TestDeploy {
 	public static void printClassloader(Class clazz){
 		ClassLoader loader1 = clazz.getClassLoader();
 		while (loader1 != null) {
-			System.out.println("1######" + loader1.toString());
+			System.out.println("!!!!!!^" + loader1.toString());
 			loader1 = loader1.getParent();
 		}
 	}
@@ -61,7 +61,7 @@ public class TestDeploy {
 		
 		// 6,builder webclassLoader
 		String className = "com.hundsun.fund.mobile.util.StartupServlet";
-		className = "javapns.notification.PushNotificationPayload";
+		//className = "javapns.notification.PushNotificationPayload";
 		try {
 			classloader.addRepository(lib);
 			classloader.addRepository(cls);
@@ -69,9 +69,17 @@ public class TestDeploy {
 			Class<?> class1 = classloader.loadClass(className);
 			Object obj1 = class1.newInstance();
 
-			Method setSampleMethod = class1.getMethod("addAlert",
-					java.lang.String.class);
-			setSampleMethod.invoke(obj1,"test");
+//			Method setSampleMethod = class1.getMethod("addAlert",
+//					java.lang.String.class);
+//			setSampleMethod.invoke(obj1,"test");
+			
+			Method setSampleMethod = class1.getMethod("init");
+			setSampleMethod.invoke(obj1);
+
+			TestDeploy.printClassloader(class1);
+			System.out.println("!!!!!!^!!!!!!");
+
+			TestDeploy.printClassloader(this.getClass());
 
 			// 7,test SERVLET loading
 			// 8,test LISTNER loading

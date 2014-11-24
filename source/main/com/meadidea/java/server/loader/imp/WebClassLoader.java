@@ -1,6 +1,10 @@
 package com.meadidea.java.server.loader.imp;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -8,7 +12,6 @@ import java.util.HashMap;
 import java.util.jar.JarFile;
 
 import com.meadidea.java.server.loader.Reloader;
-import com.sun.xml.internal.ws.util.StringUtils;
 
 /**
  * 
@@ -81,16 +84,32 @@ public class WebClassLoader extends URLClassLoader implements Reloader {
 
 	@Override
 	public String[] findRepositories() {
-		return null;
+		return this.repositories;
 	}
 
 	@Override
 	public void addRepository(String repository) {
 		this.resolveJarfile(repository);
+		this.resolveClassfile(repository);
+	}
+
+	private void resolveClassfile(String repository) {
+		if (repository != null && repository.contains("WEB-INF\\classes")) {
+			// pass
+		} else {
+			return;
+		}
+
+		String[] result = new String[repositories.length + 1];
+		for (int i = 0; i < repositories.length; i++) {
+			result[i] = repositories[i];
+		}
+		result[repositories.length] = repository;
+		this.repositories = result;
 	}
 
 	private void resolveJarfile(String repository) {
-		if (repository != null && repository.contains("WEB-INF\\lib")) {
+		if (repository != null && repository.contains("lib")) {
 			// pass
 		} else {
 			return;
@@ -112,17 +131,42 @@ public class WebClassLoader extends URLClassLoader implements Reloader {
 	}
 
 	private String classNameToPath(String repository, String className) {
-		return repository + File.separatorChar
+		return repository
 				+ className.replace('.', File.separatorChar) + ".class";
+	}
+
+	private Class<?> findinWebinfo(String name) throws ClassNotFoundException {
+		for (String res : this.repositories) {
+			String path = this.classNameToPath(res, name);
+			File file = new File(path);
+			if(file.exists() && file.isFile()){
+				//pass
+			}else{
+				return null;
+			}
+			byte[] classData = getClassData(path);
+			if (classData == null) {
+				throw new ClassNotFoundException();
+			} else {
+				return defineClass(name, classData, 0, classData.length);
+			}
+		}
+
+		throw new ClassNotFoundException(name);
 	}
 
 	// TODO: implements
 	protected Class<?> findClass(String name) throws ClassNotFoundException {
 		System.out.println("###findClass@" + name);
-		 Class<?> clazz = super.findClass(name);
-		 if(clazz != null ){
-			 return clazz;
-		 }
+		Class<?> clazz = this.findinWebinfo(name);
+		if (clazz != null) {
+			return clazz;
+		}
+		// find in super
+		clazz = super.findClass(name);
+		if (clazz != null) {
+			return clazz;
+		}
 		throw new ClassNotFoundException(name);
 	}
 
@@ -184,5 +228,23 @@ public class WebClassLoader extends URLClassLoader implements Reloader {
 	private void log(String message) {
 		System.out.println("WebClassLoader: " + message);
 
+	}
+
+	private byte[] getClassData(String path) {
+		System.out.println("classNameToPath = " + path);
+		try {
+			InputStream ins = new FileInputStream(path);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			int bufferSize = 4096;
+			byte[] buffer = new byte[bufferSize];
+			int bytesNumRead = 0;
+			while ((bytesNumRead = ins.read(buffer)) != -1) {
+				baos.write(buffer, 0, bytesNumRead);
+			}
+			return baos.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
