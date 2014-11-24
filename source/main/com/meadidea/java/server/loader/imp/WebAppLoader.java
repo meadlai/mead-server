@@ -18,7 +18,6 @@ public class WebAppLoader implements Loader,PropertyChangeListener{
 	
 	@Override
 	public ClassLoader getClassLoader() {
-		// TODO Auto-generated method stub
 		return this.classLoader;
 	}
 	

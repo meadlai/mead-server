@@ -1,7 +1,6 @@
 package com.meadidea.java.server.deploy;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 
@@ -20,6 +19,7 @@ import com.meadidea.java.server.deploy.description.ServletDef;
 import com.meadidea.java.server.deploy.description.ServletMappingDef;
 import com.meadidea.java.server.deploy.description.WebappDef2_4;
 import com.meadidea.java.server.loader.imp.WebAppLoader;
+import com.meadidea.java.server.loader.imp.WebClassLoader;
 import com.meadidea.java.server.support.IntegerUtil;
 
 public class TestDeploy {
@@ -30,6 +30,13 @@ public class TestDeploy {
 		// deploy.testWebXMLRead();
 	}
 
+	public static void printClassloader(Class clazz){
+		ClassLoader loader1 = clazz.getClassLoader();
+		while (loader1 != null) {
+			System.out.println("1######" + loader1.toString());
+			loader1 = loader1.getParent();
+		}
+	}
 	/**
 	 * path = D:\svn\Sources\Mobile_Front\WebRoot\ xml =
 	 * D:\svn\Sources\Mobile_Front\WebRoot\WEB-INF\web.xml lib =
@@ -49,22 +56,22 @@ public class TestDeploy {
 		// 4,loader webappContext
 		// 5,builder webappLoader
 		WebAppLoader apploader = new WebAppLoader();
-		ClassLoader classloader = apploader.getClassLoader();
+		WebClassLoader classloader = (WebClassLoader)apploader.getClassLoader();
 		//
-		ClassLoader loader1 = apploader.getClassLoader();
-		while (loader1 != null) {
-			System.out.println("1######" + loader1.toString());
-			loader1 = loader1.getParent();
-		}
+		
 		// 6,builder webclassLoader
 		String className = "com.hundsun.fund.mobile.util.StartupServlet";
+		className = "javapns.notification.PushNotificationPayload";
 		try {
+			classloader.addRepository(lib);
+			classloader.addRepository(cls);
+
 			Class<?> class1 = classloader.loadClass(className);
 			Object obj1 = class1.newInstance();
 
-			Method setSampleMethod = class1.getMethod("init",
-					java.lang.Object.class);
-			setSampleMethod.invoke(obj1);
+			Method setSampleMethod = class1.getMethod("addAlert",
+					java.lang.String.class);
+			setSampleMethod.invoke(obj1,"test");
 
 			// 7,test SERVLET loading
 			// 8,test LISTNER loading
