@@ -1,9 +1,11 @@
 package com.meadidea.java.server.container.context;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 import org.dom4j.DocumentException;
 
@@ -11,6 +13,8 @@ import com.meadidea.java.server.container.Container;
 import com.meadidea.java.server.container.Context;
 import com.meadidea.java.server.deploy.TestDeploy;
 import com.meadidea.java.server.deploy.description.WebappDef2_4;
+import com.meadidea.java.server.http.HttpRequest;
+import com.meadidea.java.server.http.HttpResponse;
 import com.meadidea.java.server.lifecycle.Lifecycle;
 import com.meadidea.java.server.lifecycle.LifecycleException;
 import com.meadidea.java.server.lifecycle.LifecycleListener;
@@ -34,6 +38,10 @@ public class WebappContext implements Context,Lifecycle{
 		if(this.validateWebapp()==false){
 			throw new RuntimeException("Can't init Webapp:" + path);
 		}
+		//TDO: load lib & classes.
+		this.webappLoader.getClassLoader();
+		//read web.xml, set servlet-mapping
+		//set listener-mapping
 	}
 	
 	private boolean validateWebapp(){
@@ -222,6 +230,36 @@ public class WebappContext implements Context,Lifecycle{
 
 	@Override
 	public void stop() throws LifecycleException {
+		
+	}
+
+	@Override
+	public void addChild(Container child) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeChild(Container child) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Container findChild(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Container[] findChildren() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void invoke(HttpRequest request, HttpResponse response)
+			throws IOException, ServletException {
 		
 	}
 

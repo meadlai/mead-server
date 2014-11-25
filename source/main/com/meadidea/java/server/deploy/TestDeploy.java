@@ -81,10 +81,11 @@ public class TestDeploy {
 
 			TestDeploy.printClassloader(this.getClass());
 
-			// 7,test SERVLET loading
-			// 8,test LISTNER loading
+			// 7,test SERVLET loading//ok
+			// 8,test LISTNER loading//later
 			// 9,test context-parameter
 			// 0,integrate socket & http into this
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

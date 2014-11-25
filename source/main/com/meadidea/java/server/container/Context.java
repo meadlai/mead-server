@@ -2,7 +2,7 @@ package com.meadidea.java.server.container;
 
 import javax.servlet.ServletContext;
 
-public interface Context {
+public interface Context extends Container{
 
 	public boolean getAvailable();
 

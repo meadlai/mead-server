@@ -5,6 +5,8 @@ package com.meadidea.java.server;
 
 import com.meadidea.java.server.connector.Connector;
 import com.meadidea.java.server.connector.ConnectorFactory;
+import com.meadidea.java.server.container.Container;
+import com.meadidea.java.server.container.context.WebappContext;
 import com.meadidea.java.server.lifecycle.Lifecycle;
 import com.meadidea.java.server.lifecycle.LifecycleException;
 import com.meadidea.java.server.lifecycle.LifecycleListener;
@@ -19,6 +21,7 @@ import com.meadidea.java.server.service.Service;
  */
 public class HttpSever implements Lifecycle {
 	private Connector connector = null;
+	private Container container = null;
 	private Service service = null;
 
 	@Override
@@ -38,8 +41,14 @@ public class HttpSever implements Lifecycle {
 
 	@Override
 	public void start() throws LifecycleException {
+		String path = "D:\\svn\\Sources\\Mobile_Front\\WebRoot\\";
+
+		
 		this.connector = ConnectorFactory.instance().getConnector("common");
+		this.container = new WebappContext(path);
+		this.connector.setContainer(this.container);
 		this.connector.start();
+		
 	}
 
 	@Override

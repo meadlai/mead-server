@@ -57,6 +57,7 @@ public class ServletWrapper implements Wrapper{
 
 		    try {
 		      servlet = (HttpServlet) myClass.newInstance();
+		      servlet.init();
 		      servlet.service((ServletRequest) request, (ServletResponse) response);
 		    }
 		    catch (Exception e) {
